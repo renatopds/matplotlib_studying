@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 df = pd.read_parquet('data/sales_treated.parquet')
 
-## agroupying per product and summing the columns
+## grouping per product and summing the columns
 df_grouped = df.groupby('Product')[['Quantity', 'TotalSales']].sum()
 
 ##The most and less sold products by volume
@@ -32,4 +32,28 @@ plt.title('Ranking Revenue (R$)')
 plt.xlabel('Product')
 plt.ylabel('Total Revenue (R$)')
 plt.savefig('graphs/ranking_revenue.png')
+plt.show()
+
+##Total revenue over time##
+df['Date'] = pd.to_datetime(df['Date'])
+df_time = df.groupby('Date')[['TotalSales']].sum()
+plt.figure(figsize=(12, 8))
+plt.plot(df_time.index, df_time['TotalSales'], color='#626CDA')
+plt.title('Total Revenue Over Time')
+plt.xlabel('Date')
+plt.ylabel('Total Revenue (R$)')
+plt.xticks(rotation=30)
+plt.savefig('graphs/total_revenue_over_time.png')
+plt.show()
+
+##Which month has the most revenue##
+df['Month'] = df['Date'].dt.to_period('M')
+df_monthly = df.groupby('Month')[['TotalSales']].sum()
+plt.figure(figsize=(12, 8))
+plt.bar(df_monthly.index.astype(str), df_monthly['TotalSales'], color='#FBFF96')
+plt.title('Total Revenue by Month')
+plt.xlabel('Month')
+plt.ylabel('Total Revenue (R$)')
+plt.xticks(rotation=30)
+plt.savefig('graphs/total_revenue_by_month.png')
 plt.show()
